@@ -1,0 +1,30 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: foodflow
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/foodflow_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+    username: root
+    password: 1234   # <-- change this to your local MySQL password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update       # auto-creates/updates tables from entities. Fine for dev, not for prod.
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+# Custom JWT config, read in JwtUtil
+jwt:
+  secret: "ReplaceThisWithA256BitSecretKeyForFoodFlowJWTSigningPurposesOnly"
+  expiration-ms: 86400000   # 24 hours
