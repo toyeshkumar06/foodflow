@@ -30,6 +30,8 @@ public class RestaurantService {
                 .pincode(request.getPincode())
                 .openingTime(request.getOpeningTime() != null ? LocalTime.parse(request.getOpeningTime()) : null)
                 .closingTime(request.getClosingTime() != null ? LocalTime.parse(request.getClosingTime()) : null)
+                .latitude(request.getLatitude())
+                .longitude(request.getLongitude())
                 .status(RestaurantStatus.CLOSED)
                 .averageRating(0.0)
                 .owner(owner)
@@ -42,6 +44,14 @@ public class RestaurantService {
     public RestaurantResponse updateStatus(Long restaurantId, RestaurantStatus status, User owner) {
         Restaurant restaurant = getOwnedRestaurantOrThrow(restaurantId, owner);
         restaurant.setStatus(status);
+        restaurantRepository.save(restaurant);
+        return toResponse(restaurant);
+    }
+
+    public RestaurantResponse updateLocation(Long restaurantId, Double latitude, Double longitude, User owner) {
+        Restaurant restaurant = getOwnedRestaurantOrThrow(restaurantId, owner);
+        restaurant.setLatitude(latitude);
+        restaurant.setLongitude(longitude);
         restaurantRepository.save(restaurant);
         return toResponse(restaurant);
     }
@@ -61,8 +71,6 @@ public class RestaurantService {
                 .map(this::toResponse).collect(Collectors.toList());
     }
 
-    // Reused by MenuService: confirms the logged-in owner actually owns this restaurant
-    // before letting them touch its menu/inventory. Without this, any owner could edit anyone's restaurant.
     public Restaurant getOwnedRestaurantOrThrow(Long restaurantId, User owner) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> ApiException.notFound("Restaurant not found"));
@@ -77,7 +85,8 @@ public class RestaurantService {
         return new RestaurantResponse(
                 r.getId(), r.getName(), r.getDescription(), r.getCuisineType(),
                 r.getAddressLine(), r.getCity(), r.getPincode(), r.getStatus(),
-                r.getOpeningTime(), r.getClosingTime(), r.getAverageRating(), r.getOwner().getId()
+                r.getOpeningTime(), r.getClosingTime(), r.getAverageRating(), r.getOwner().getId(),
+                r.getLatitude(), r.getLongitude()
         );
     }
 }

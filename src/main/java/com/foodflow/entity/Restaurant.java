@@ -8,11 +8,7 @@ import java.time.LocalTime;
 
 @Entity
 @Table(name = "restaurants")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Restaurant {
 
     @Id
@@ -36,10 +32,16 @@ public class Restaurant {
     private LocalTime openingTime;
     private LocalTime closingTime;
 
+    // Needed for distance calculation (delivery assignment, ETA)
+    private Double latitude;
+    private Double longitude;
+
+    @Builder.Default
+    private Integer avgPrepTimeMinutes = 20;
+
     @Builder.Default
     private Double averageRating = 0.0;
 
-    // This links a restaurant to the User who owns it (many restaurants -> one owner is possible)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;

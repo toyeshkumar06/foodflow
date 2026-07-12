@@ -18,13 +18,21 @@ public class RestaurantDtos {
         @NotBlank private String addressLine;
         @NotBlank private String city;
         private String pincode;
-        private String openingTime; // send as "09:00"
-        private String closingTime; // send as "23:00"
+        private String openingTime;
+        private String closingTime;
+        private Double latitude;
+        private Double longitude;
     }
 
     @Data
     public static class UpdateStatusRequest {
         @NotNull private RestaurantStatus status;
+    }
+
+    @Data
+    public static class UpdateLocationRequest {
+        @NotNull private Double latitude;
+        @NotNull private Double longitude;
     }
 
     @Data
@@ -42,5 +50,7 @@ public class RestaurantDtos {
         private LocalTime closingTime;
         private Double averageRating;
         private Long ownerId;
+        private Double latitude;
+        private Double longitude;
     }
 }

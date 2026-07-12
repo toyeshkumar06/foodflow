@@ -31,6 +31,13 @@ public class RestaurantController {
         return restaurantService.updateStatus(id, request.getStatus(), owner);
     }
 
+    @PatchMapping("/api/restaurant-owner/restaurants/{id}/location")
+    public RestaurantResponse updateLocation(@PathVariable Long id,
+                                              @Valid @RequestBody UpdateLocationRequest request,
+                                              @AuthenticationPrincipal User owner) {
+        return restaurantService.updateLocation(id, request.getLatitude(), request.getLongitude(), owner);
+    }
+
     @GetMapping("/api/restaurant-owner/restaurants/mine")
     public List<RestaurantResponse> getMyRestaurants(@AuthenticationPrincipal User owner) {
         return restaurantService.getMyRestaurants(owner);
