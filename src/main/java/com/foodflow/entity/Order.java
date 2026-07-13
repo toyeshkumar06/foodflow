@@ -27,7 +27,7 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_agent_id")
-    private User deliveryAgent; // null until the assignment algorithm picks someone
+    private User deliveryAgent;
 
     private String deliveryAddressLine;
     private String deliveryCity;
@@ -38,6 +38,11 @@ public class Order {
 
     @Column(nullable = false)
     private BigDecimal deliveryCharge;
+
+    @Builder.Default
+    private BigDecimal discountAmount = BigDecimal.ZERO;
+
+    private String appliedCouponCode;
 
     @Column(nullable = false)
     private BigDecimal grandTotal;
@@ -54,7 +59,6 @@ public class Order {
     @Builder.Default
     private boolean agentConfirmed = false;
 
-    // Agents who rejected this order — excluded from future reassignment attempts
     @ElementCollection
     @CollectionTable(name = "order_rejected_agents", joinColumns = @JoinColumn(name = "order_id"))
     @Column(name = "agent_id")

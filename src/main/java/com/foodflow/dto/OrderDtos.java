@@ -14,6 +14,7 @@ public class OrderDtos {
     @Data
     public static class PlaceOrderRequest {
         @NotNull private Long addressId;
+        private String couponCode; // optional
     }
 
     @Data
@@ -37,6 +38,8 @@ public class OrderDtos {
         private List<OrderItemResponse> items;
         private BigDecimal itemsTotal;
         private BigDecimal deliveryCharge;
+        private BigDecimal discountAmount;
+        private String appliedCouponCode;
         private BigDecimal grandTotal;
         private OrderStatus status;
         private String deliveryAddressLine;

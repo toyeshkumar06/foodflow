@@ -35,6 +35,8 @@ public class OrderService {
     private final DeliveryAgentProfileRepository deliveryAgentProfileRepository;
     private final EtaService etaService;
     private final SurgePricingService surgePricingService;
+    private final CouponService couponService;
+    private final PaymentService paymentService;
 
     private static final BigDecimal BASE_DELIVERY_CHARGE = BigDecimal.valueOf(40);
 
@@ -97,8 +99,19 @@ public class OrderService {
                 .map(i -> i.getFoodItem().getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
+        // Coupon: check BEFORE saving the order, since "first order only" needs to look
+        // at existing orders, and this new order doesn't exist yet at this point.
+        BigDecimal discountAmount = BigDecimal.ZERO;
+        String appliedCode = null;
+        if (request.getCouponCode() != null && !request.getCouponCode().isBlank()) {
+            boolean isFirstOrder = orderRepository.findByCustomerIdOrderByIdDesc(customer.getId()).isEmpty();
+            discountAmount = couponService.validateAndCalculateDiscount(
+                    request.getCouponCode(), restaurant, itemsTotal, isFirstOrder);
+            appliedCode = request.getCouponCode().toUpperCase();
+        }
+
         BigDecimal deliveryCharge = BASE_DELIVERY_CHARGE.multiply(surgeMultiplier).setScale(2, RoundingMode.HALF_UP);
-        BigDecimal grandTotal = itemsTotal.add(deliveryCharge);
+        BigDecimal grandTotal = itemsTotal.subtract(discountAmount).add(deliveryCharge);
 
         Order order = Order.builder()
                 .customer(customer)
@@ -108,6 +121,8 @@ public class OrderService {
                 .deliveryPincode(address.getPincode())
                 .itemsTotal(itemsTotal)
                 .deliveryCharge(deliveryCharge)
+                .discountAmount(discountAmount)
+                .appliedCouponCode(appliedCode)
                 .grandTotal(grandTotal)
                 .status(OrderStatus.PLACED)
                 .distanceKm(distanceKm)
@@ -128,44 +143,42 @@ public class OrderService {
             orderItemRepository.save(orderItem);
         }
 
-        cartService.clearCart(customer);
+        if (appliedCode != null) {
+            couponService.recordUsage(appliedCode, customer, order);
+        }
 
+        cartService.clearCart(customer);
         return toResponse(order);
     }
 
     public void cancelOrder(Long orderId, User customer) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> ApiException.notFound("Order not found"));
-
         if (!order.getCustomer().getId().equals(customer.getId())) {
             throw ApiException.forbidden("This is not your order");
         }
-
         if (order.getStatus() != OrderStatus.PLACED && order.getStatus() != OrderStatus.ACCEPTED) {
             throw ApiException.badRequest("Order cannot be cancelled once preparation has started");
         }
-
         order.setStatus(OrderStatus.CANCELLED);
         orderRepository.save(order);
+
+        // Business rule: cancelling a paid order automatically refunds it
+        paymentService.refundIfPaid(orderId);
     }
 
     public OrderResponse updateStatusByOwner(Long orderId, OrderStatus newStatus, User owner) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> ApiException.notFound("Order not found"));
-
         if (!order.getRestaurant().getOwner().getId().equals(owner.getId())) {
             throw ApiException.forbidden("This order does not belong to your restaurant");
         }
-
         if (!OWNER_ALLOWED_TARGETS.contains(newStatus)) {
-            throw ApiException.badRequest("Restaurant owners cannot set status to " + newStatus + " — that's managed by the delivery agent");
+            throw ApiException.badRequest("Restaurant owners cannot set status to " + newStatus);
         }
-
         validateTransition(order.getStatus(), newStatus);
         order.setStatus(newStatus);
 
-        // This is where the delivery assignment algorithm kicks in — the moment the
-        // restaurant starts preparing the food, we start looking for a nearby agent.
         if (newStatus == OrderStatus.PREPARING) {
             deliveryAssignmentService.assignNearestAgent(order);
         }
@@ -177,15 +190,12 @@ public class OrderService {
     public OrderResponse updateStatusByAgent(Long orderId, OrderStatus newStatus, User agent) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> ApiException.notFound("Order not found"));
-
         if (order.getDeliveryAgent() == null || !order.getDeliveryAgent().getId().equals(agent.getId())) {
             throw ApiException.forbidden("This order is not assigned to you");
         }
-
         if (!AGENT_ALLOWED_TARGETS.contains(newStatus)) {
             throw ApiException.badRequest("Delivery agents cannot set status to " + newStatus);
         }
-
         validateTransition(order.getStatus(), newStatus);
         order.setStatus(newStatus);
 
@@ -266,18 +276,10 @@ public class OrderService {
                 .collect(Collectors.toList());
 
         return new OrderResponse(
-                order.getId(),
-                order.getRestaurant().getName(),
-                items,
-                order.getItemsTotal(),
-                order.getDeliveryCharge(),
-                order.getGrandTotal(),
-                order.getStatus(),
-                order.getDeliveryAddressLine(),
-                order.getCreatedAt(),
-                order.getEtaMinutes(),
-                order.getDistanceKm(),
-                order.getSurgeMultiplier(),
+                order.getId(), order.getRestaurant().getName(), items, order.getItemsTotal(),
+                order.getDeliveryCharge(), order.getDiscountAmount(), order.getAppliedCouponCode(),
+                order.getGrandTotal(), order.getStatus(), order.getDeliveryAddressLine(), order.getCreatedAt(),
+                order.getEtaMinutes(), order.getDistanceKm(), order.getSurgeMultiplier(),
                 order.getDeliveryAgent() != null ? order.getDeliveryAgent().getName() : null,
                 order.isAgentConfirmed()
         );
