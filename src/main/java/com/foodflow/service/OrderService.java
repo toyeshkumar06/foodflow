@@ -37,6 +37,7 @@ public class OrderService {
     private final SurgePricingService surgePricingService;
     private final CouponService couponService;
     private final PaymentService paymentService;
+    private final NotificationService notificationService;
 
     private static final BigDecimal BASE_DELIVERY_CHARGE = BigDecimal.valueOf(40);
 
@@ -99,8 +100,6 @@ public class OrderService {
                 .map(i -> i.getFoodItem().getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        // Coupon: check BEFORE saving the order, since "first order only" needs to look
-        // at existing orders, and this new order doesn't exist yet at this point.
         BigDecimal discountAmount = BigDecimal.ZERO;
         String appliedCode = null;
         if (request.getCouponCode() != null && !request.getCouponCode().isBlank()) {
@@ -148,6 +147,11 @@ public class OrderService {
         }
 
         cartService.clearCart(customer);
+
+        notificationService.notify(customer, "Order Confirmed",
+                "Your order #" + order.getId() + " from " + restaurant.getName() + " has been placed.",
+                NotificationType.ORDER_CONFIRMED);
+
         return toResponse(order);
     }
 
@@ -162,8 +166,6 @@ public class OrderService {
         }
         order.setStatus(OrderStatus.CANCELLED);
         orderRepository.save(order);
-
-        // Business rule: cancelling a paid order automatically refunds it
         paymentService.refundIfPaid(orderId);
     }
 
@@ -184,6 +186,17 @@ public class OrderService {
         }
 
         orderRepository.save(order);
+
+        if (newStatus == OrderStatus.ACCEPTED) {
+            notificationService.notify(order.getCustomer(), "Order Accepted",
+                    "Your order #" + order.getId() + " has been accepted by the restaurant.",
+                    NotificationType.ORDER_ACCEPTED);
+        } else if (newStatus == OrderStatus.PREPARING) {
+            notificationService.notify(order.getCustomer(), "Preparing Your Food",
+                    "Your order #" + order.getId() + " is being prepared.",
+                    NotificationType.PREPARING);
+        }
+
         return toResponse(order);
     }
 
@@ -204,6 +217,17 @@ public class OrderService {
         }
 
         orderRepository.save(order);
+
+        if (newStatus == OrderStatus.ON_THE_WAY) {
+            notificationService.notify(order.getCustomer(), "Out For Delivery",
+                    "Your order #" + order.getId() + " is on the way.",
+                    NotificationType.OUT_FOR_DELIVERY);
+        } else if (newStatus == OrderStatus.DELIVERED) {
+            notificationService.notify(order.getCustomer(), "Delivered",
+                    "Your order #" + order.getId() + " has been delivered. Enjoy your meal!",
+                    NotificationType.DELIVERED);
+        }
+
         return toResponse(order);
     }
 

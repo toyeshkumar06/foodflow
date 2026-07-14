@@ -29,4 +29,7 @@ public class DeliveryAgentProfile {
 
     @Builder.Default
     private BigDecimal totalEarnings = BigDecimal.ZERO;
+
+    @Builder.Default
+    private Double averageRating = 0.0;
 }
