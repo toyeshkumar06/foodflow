@@ -11,46 +11,53 @@ function Login() {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // stops the browser's default "reload the page" form behavior
+    e.preventDefault();
     setError("");
 
     try {
       const response = await axiosInstance.post("/auth/login", { email, password });
       login(response.data);
-      navigate("/"); // go to home page after successful login
+      navigate("/");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed. Check your credentials.");
     }
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "50px auto", padding: "20px" }}>
-      <h2>Login to FoodFlow</h2>
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Email</label><br />
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            style={{ width: "100%", padding: "8px" }}
-          />
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Password</label><br />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            style={{ width: "100%", padding: "8px" }}
-          />
-        </div>
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        <button type="submit" style={{ padding: "10px 20px" }}>Login</button>
-      </form>
-      <p>Don't have an account? <Link to="/register">Register here</Link></p>
+    <div className="centered-page">
+      <div className="card auth-card">
+        <h2>Welcome back</h2>
+        <p className="auth-subtitle">Login to order from your favorite restaurants</p>
+
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>Email</label>
+            <input
+              type="email"
+              className="input-field"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              className="input-field"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          {error && <p className="error-text">{error}</p>}
+          <button type="submit" className="btn btn-primary">Login</button>
+        </form>
+
+        <p className="auth-footer">
+          Don't have an account? <Link to="/register">Register here</Link>
+        </p>
+      </div>
     </div>
   );
 }

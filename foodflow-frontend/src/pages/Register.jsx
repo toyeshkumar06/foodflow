@@ -26,33 +26,40 @@ function Register() {
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "50px auto", padding: "20px" }}>
-      <h2>Create a FoodFlow Account</h2>
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Name</label><br />
-          <input value={name} onChange={(e) => setName(e.target.value)} required style={{ width: "100%", padding: "8px" }} />
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Email</label><br />
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ width: "100%", padding: "8px" }} />
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Password</label><br />
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required style={{ width: "100%", padding: "8px" }} />
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label>I am a</label><br />
-          <select value={role} onChange={(e) => setRole(e.target.value)} style={{ width: "100%", padding: "8px" }}>
-            <option value="CUSTOMER">Customer</option>
-            <option value="RESTAURANT_OWNER">Restaurant Owner</option>
-            <option value="DELIVERY_AGENT">Delivery Agent</option>
-          </select>
-        </div>
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        <button type="submit" style={{ padding: "10px 20px" }}>Register</button>
-      </form>
-      <p>Already have an account? <Link to="/login">Login here</Link></p>
+    <div className="centered-page">
+      <div className="card auth-card">
+        <h2>Create your account</h2>
+        <p className="auth-subtitle">Join FoodFlow and start ordering</p>
+
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>Name</label>
+            <input className="input-field" value={name} onChange={(e) => setName(e.target.value)} required />
+          </div>
+          <div className="form-group">
+            <label>Email</label>
+            <input type="email" className="input-field" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          </div>
+          <div className="form-group">
+            <label>Password</label>
+            <input type="password" className="input-field" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          </div>
+          <div className="form-group">
+            <label>I am a</label>
+            <select className="input-field" value={role} onChange={(e) => setRole(e.target.value)}>
+              <option value="CUSTOMER">Customer</option>
+              <option value="RESTAURANT_OWNER">Restaurant Owner</option>
+              <option value="DELIVERY_AGENT">Delivery Agent</option>
+            </select>
+          </div>
+          {error && <p className="error-text">{error}</p>}
+          <button type="submit" className="btn btn-primary">Register</button>
+        </form>
+
+        <p className="auth-footer">
+          Already have an account? <Link to="/login">Login here</Link>
+        </p>
+      </div>
     </div>
   );
 }
