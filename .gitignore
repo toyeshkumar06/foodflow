@@ -8,3 +8,6 @@ target/
 application-local.yml
 *.env
 HELP.md
+foodflow-frontend/node_modules/
+foodflow-frontend/dist/
+foodflow-frontend/.env
