@@ -1,22 +1,22 @@
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 function Home() {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
+  const { user } = useAuth();
 
   return (
-    <div style={{ maxWidth: "600px", margin: "50px auto", padding: "20px" }}>
-      <h2>Welcome to FoodFlow</h2>
-      <p>Logged in as: <strong>{user?.email}</strong></p>
-      <p>Role: <strong>{user?.role}</strong></p>
-      <button onClick={handleLogout} style={{ padding: "10px 20px" }}>Logout</button>
-    </div>
+    <>
+      <Navbar />
+      <div className="page-container" style={{ paddingTop: "60px" }}>
+        <h1 style={{ fontSize: "32px", marginBottom: "8px" }}>
+          Hey there 👋
+        </h1>
+        <p style={{ color: "var(--color-text-light)", fontSize: "16px" }}>
+          You're logged in as <strong>{user?.email}</strong>. This is where your
+          dashboard will come together as we build out the next pages.
+        </p>
+      </div>
+    </>
   );
 }
 
