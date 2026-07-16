@@ -25,8 +25,10 @@ function Login() {
 
   return (
     <div className="centered-page">
-      <div className="card auth-card">
-        <h2>Welcome back</h2>
+      <div className="auth-wrapper">
+        <div className="auth-logo">FoodFlow</div>
+        <div className="card auth-card">
+          <h2>Welcome back</h2>
         <p className="auth-subtitle">Login to order from your favorite restaurants</p>
 
         <form onSubmit={handleSubmit}>
@@ -55,8 +57,9 @@ function Login() {
         </form>
 
         <p className="auth-footer">
-          Don't have an account? <Link to="/register">Register here</Link>
-        </p>
+            Don't have an account? <Link to="/register">Register here</Link>
+          </p>
+        </div>
       </div>
     </div>
   );

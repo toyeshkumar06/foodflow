@@ -27,8 +27,10 @@ function Register() {
 
   return (
     <div className="centered-page">
-      <div className="card auth-card">
-        <h2>Create your account</h2>
+      <div className="auth-wrapper">
+        <div className="auth-logo">FoodFlow</div>
+        <div className="card auth-card">
+          <h2>Create your account</h2>
         <p className="auth-subtitle">Join FoodFlow and start ordering</p>
 
         <form onSubmit={handleSubmit}>
@@ -57,8 +59,9 @@ function Register() {
         </form>
 
         <p className="auth-footer">
-          Already have an account? <Link to="/login">Login here</Link>
-        </p>
+            Already have an account? <Link to="/login">Login here</Link>
+          </p>
+        </div>
       </div>
     </div>
   );

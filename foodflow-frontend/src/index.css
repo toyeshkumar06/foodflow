@@ -181,6 +181,23 @@ select.input-field option {
   color: var(--color-text-light);
 }
 
+/* Auth page logo */
+.auth-wrapper {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.auth-logo {
+  font-family: 'Poppins', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 24px;
+}
+
 /* Navbar */
 .navbar {
   background: var(--color-card);
