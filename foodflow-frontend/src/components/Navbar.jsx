@@ -1,8 +1,10 @@
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useCart } from "../context/CartContext";
+import { useNavigate, Link } from "react-router-dom";
 
 function Navbar() {
   const { user, logout } = useAuth();
+  const { itemCount } = useCart();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -18,9 +20,15 @@ function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-inner">
-        <span className="navbar-logo">FoodFlow</span>
+        <Link to="/restaurants" className="navbar-logo">FoodFlow</Link>
         {user && (
           <div className="navbar-right">
+            {user.role === "CUSTOMER" && (
+              <Link to="/cart" className="cart-icon-link">
+                🛒
+                {itemCount > 0 && <span className="cart-badge">{itemCount}</span>}
+              </Link>
+            )}
             <span className="navbar-role-badge">{formatRole(user.role)}</span>
             <span className="navbar-email">{user.email}</span>
             <button className="btn btn-secondary" onClick={handleLogout}>Logout</button>
