@@ -455,3 +455,132 @@ select.input-field option {
   border-top: 2px solid var(--color-border);
   font-size: 17px;
 }
+/* Navbar link */
+.navbar-link {
+  font-size: 14px;
+  color: var(--color-text);
+  font-weight: 500;
+}
+.navbar-link:hover {
+  color: var(--color-primary);
+}
+
+/* Address options (checkout) */
+.address-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+}
+.address-option:last-of-type {
+  border-bottom: none;
+}
+.address-option input {
+  margin-top: 4px;
+}
+
+/* Payment options */
+.payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.payment-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: border-color 0.15s ease;
+}
+.payment-option.selected {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+/* Order list */
+.order-row-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-decoration: none;
+  color: var(--color-text);
+  transition: border-color 0.15s ease;
+}
+.order-row-card:hover {
+  border-color: var(--color-primary);
+}
+
+.status-badge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  text-transform: capitalize;
+  display: inline-block;
+  margin-top: 4px;
+}
+.status-badge-active {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+.status-badge-success {
+  background: rgba(74, 222, 158, 0.15);
+  color: var(--color-success);
+}
+.status-badge-error {
+  background: rgba(255, 107, 107, 0.15);
+  color: var(--color-error);
+}
+
+/* Order tracking timeline */
+.tracking-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.tracking-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  color: var(--color-text-light);
+  font-size: 14px;
+  position: relative;
+}
+.tracking-step::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 28px;
+  width: 2px;
+  height: calc(100% - 8px);
+  background: var(--color-border);
+}
+.tracking-step:last-child::before {
+  display: none;
+}
+.tracking-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-border);
+  flex-shrink: 0;
+  z-index: 1;
+}
+.tracking-step.done {
+  color: var(--color-text);
+  font-weight: 500;
+}
+.tracking-step.done .tracking-dot {
+  background: var(--color-primary);
+}

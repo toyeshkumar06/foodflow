@@ -11,10 +11,6 @@ function Cart() {
     refreshCart();
   }, []);
 
-  const handleCheckout = () => {
-    alert("Checkout page is coming in the next phase!");
-  };
-
   return (
     <>
       <Navbar />
@@ -61,7 +57,7 @@ function Cart() {
 
             <div style={{ display: "flex", gap: "12px", marginTop: "20px" }}>
               <button className="btn btn-secondary" onClick={clearCart}>Clear Cart</button>
-              <button className="btn btn-primary" onClick={handleCheckout}>Proceed to Checkout</button>
+              <button className="btn btn-primary" onClick={() => navigate("/checkout")}>Proceed to Checkout</button>
             </div>
           </>
         )}
