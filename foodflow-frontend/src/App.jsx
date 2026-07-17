@@ -6,6 +6,9 @@ import Home from "./pages/Home";
 import Restaurants from "./pages/Restaurants";
 import RestaurantMenu from "./pages/RestaurantMenu";
 import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
+import Orders from "./pages/Orders";
+import OrderDetail from "./pages/OrderDetail";
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth();
@@ -22,6 +25,9 @@ function App() {
         <Route path="/restaurants" element={<ProtectedRoute><Restaurants /></ProtectedRoute>} />
         <Route path="/restaurants/:id" element={<ProtectedRoute><RestaurantMenu /></ProtectedRoute>} />
         <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
+        <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+        <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
+        <Route path="/orders/:id" element={<ProtectedRoute><OrderDetail /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );

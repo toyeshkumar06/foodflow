@@ -24,10 +24,13 @@ function Navbar() {
         {user && (
           <div className="navbar-right">
             {user.role === "CUSTOMER" && (
-              <Link to="/cart" className="cart-icon-link">
-                🛒
-                {itemCount > 0 && <span className="cart-badge">{itemCount}</span>}
-              </Link>
+              <>
+                <Link to="/orders" className="navbar-link">My Orders</Link>
+                <Link to="/cart" className="cart-icon-link">
+                  🛒
+                  {itemCount > 0 && <span className="cart-badge">{itemCount}</span>}
+                </Link>
+              </>
             )}
             <span className="navbar-role-badge">{formatRole(user.role)}</span>
             <span className="navbar-email">{user.email}</span>
