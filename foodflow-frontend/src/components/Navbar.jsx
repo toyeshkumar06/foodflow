@@ -1,6 +1,7 @@
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { useNavigate, Link } from "react-router-dom";
+import NotificationBell from "./NotificationBell";
 
 function Navbar() {
   const { user, logout } = useAuth();
@@ -30,6 +31,7 @@ function Navbar() {
                   🛒
                   {itemCount > 0 && <span className="cart-badge">{itemCount}</span>}
                 </Link>
+                <NotificationBell />
               </>
             )}
             <span className="navbar-role-badge">{formatRole(user.role)}</span>

@@ -156,18 +156,22 @@ public class OrderService {
     }
 
     public void cancelOrder(Long orderId, User customer) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> ApiException.notFound("Order not found"));
-        if (!order.getCustomer().getId().equals(customer.getId())) {
-            throw ApiException.forbidden("This is not your order");
-        }
-        if (order.getStatus() != OrderStatus.PLACED && order.getStatus() != OrderStatus.ACCEPTED) {
-            throw ApiException.badRequest("Order cannot be cancelled once preparation has started");
-        }
-        order.setStatus(OrderStatus.CANCELLED);
-        orderRepository.save(order);
-        paymentService.refundIfPaid(orderId);
+    Order order = orderRepository.findById(orderId)
+            .orElseThrow(() -> ApiException.notFound("Order not found"));
+    if (!order.getCustomer().getId().equals(customer.getId())) {
+        throw ApiException.forbidden("This is not your order");
     }
+    if (order.getStatus() != OrderStatus.PLACED && order.getStatus() != OrderStatus.ACCEPTED) {
+        throw ApiException.badRequest("Order cannot be cancelled once preparation has started");
+    }
+    order.setStatus(OrderStatus.CANCELLED);
+    orderRepository.save(order);
+    paymentService.refundIfPaid(orderId);
+
+    notificationService.notify(customer, "Order Cancelled",
+            "Your order #" + order.getId() + " from " + order.getRestaurant().getName() + " has been cancelled.",
+            NotificationType.GENERAL);
+}
 
     public OrderResponse updateStatusByOwner(Long orderId, OrderStatus newStatus, User owner) {
         Order order = orderRepository.findById(orderId)
