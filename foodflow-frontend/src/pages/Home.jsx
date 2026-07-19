@@ -1,22 +1,21 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import Navbar from "../components/Navbar";
 
 function Home() {
   const { user } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user?.role === "CUSTOMER") navigate("/restaurants");
+    else if (user?.role === "RESTAURANT_OWNER") navigate("/owner/restaurants");
+    // Delivery agent and Admin routing added in later phases — they'll land here for now.
+  }, [user]);
 
   return (
-    <>
-      <Navbar />
-      <div className="page-container" style={{ paddingTop: "60px" }}>
-        <h1 style={{ fontSize: "32px", marginBottom: "8px" }}>
-          Hey there 👋
-        </h1>
-        <p style={{ color: "var(--color-text-light)", fontSize: "16px" }}>
-          You're logged in as <strong>{user?.email}</strong>. This is where your
-          dashboard will come together as we build out the next pages.
-        </p>
-      </div>
-    </>
+    <div className="centered-page">
+      <p style={{ color: "var(--color-text-light)" }}>Loading your dashboard...</p>
+    </div>
   );
 }
 
