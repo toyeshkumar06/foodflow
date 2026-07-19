@@ -60,6 +60,10 @@ public class MenuController {
         return menuService.linkIngredientToFoodItem(foodItemId, request, owner);
     }
 
+    @GetMapping("/api/restaurants/{restaurantId}/categories")
+    public List<CategoryResponse> getCategories(@PathVariable Long restaurantId) {
+        return menuService.getCategories(restaurantId);
+    }
     @GetMapping("/api/restaurants/{restaurantId}/menu")
     public List<FoodItemResponse> getMenu(@PathVariable Long restaurantId) {
         return menuService.getMenu(restaurantId);

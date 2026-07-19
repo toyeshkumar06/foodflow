@@ -70,6 +70,11 @@ public class MenuService {
         foodItemRepository.delete(item);
     }
 
+    public List<CategoryResponse> getCategories(Long restaurantId) {
+    return categoryRepository.findByRestaurantId(restaurantId).stream()
+            .map(c -> new CategoryResponse(c.getId(), c.getName()))
+            .collect(Collectors.toList());
+    }
     public List<FoodItemResponse> getMenu(Long restaurantId) {
         return foodItemRepository.findByRestaurantId(restaurantId).stream()
                 .map(this::toFoodItemResponse).collect(Collectors.toList());
