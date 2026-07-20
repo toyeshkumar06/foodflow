@@ -18,7 +18,10 @@ function Navbar() {
     return role.replace("_", " ").toLowerCase();
   };
 
-  const logoLink = user?.role === "RESTAURANT_OWNER" ? "/owner/restaurants" : "/restaurants";
+  const logoLink =
+    user?.role === "RESTAURANT_OWNER" ? "/owner/restaurants" :
+    user?.role === "DELIVERY_AGENT" ? "/agent" :
+    "/restaurants";
 
   return (
     <nav className="navbar">
@@ -38,6 +41,9 @@ function Navbar() {
             )}
             {user.role === "RESTAURANT_OWNER" && (
               <Link to="/owner/restaurants" className="navbar-link">My Restaurants</Link>
+            )}
+            {user.role === "DELIVERY_AGENT" && (
+              <Link to="/agent" className="navbar-link">Dashboard</Link>
             )}
             <span className="navbar-role-badge">{formatRole(user.role)}</span>
             <span className="navbar-email">{user.email}</span>
