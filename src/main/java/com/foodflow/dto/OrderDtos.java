@@ -25,6 +25,7 @@ public class OrderDtos {
     @Data
     @AllArgsConstructor
     public static class OrderItemResponse {
+        private Long foodItemId;
         private String foodName;
         private BigDecimal price;
         private int quantity;

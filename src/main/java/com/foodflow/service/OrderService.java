@@ -300,8 +300,8 @@ public class OrderService {
 
     private OrderResponse toResponse(Order order) {
         List<OrderItemResponse> items = orderItemRepository.findByOrderId(order.getId()).stream()
-                .map(i -> new OrderItemResponse(i.getFoodNameSnapshot(), i.getPriceAtOrderTime(), i.getQuantity()))
-                .collect(Collectors.toList());
+        .map(i -> new OrderItemResponse(i.getFoodItem().getId(), i.getFoodNameSnapshot(), i.getPriceAtOrderTime(), i.getQuantity()))
+        .collect(Collectors.toList());
 
         return new OrderResponse(
                 order.getId(), order.getRestaurant().getName(), items, order.getItemsTotal(),
