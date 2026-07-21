@@ -13,6 +13,8 @@ import OwnerRestaurants from "./pages/OwnerRestaurants";
 import OwnerRestaurantDetail from "./pages/OwnerRestaurantDetail";
 import AgentDashboard from "./pages/AgentDashboard";
 import AgentHistory from "./pages/AgentHistory";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminCoupons from "./pages/AdminCoupons";
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth();
@@ -36,6 +38,8 @@ function App() {
         <Route path="/owner/restaurants/:id" element={<ProtectedRoute><OwnerRestaurantDetail /></ProtectedRoute>} />
         <Route path="/agent" element={<ProtectedRoute><AgentDashboard /></ProtectedRoute>} />
         <Route path="/agent/history" element={<ProtectedRoute><AgentHistory /></ProtectedRoute>} />
+        <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+        <Route path="/admin/coupons" element={<ProtectedRoute><AdminCoupons /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );
