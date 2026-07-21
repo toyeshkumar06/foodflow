@@ -21,6 +21,7 @@ function Navbar() {
   const logoLink =
     user?.role === "RESTAURANT_OWNER" ? "/owner/restaurants" :
     user?.role === "DELIVERY_AGENT" ? "/agent" :
+    user?.role === "ADMIN" ? "/admin" :
     "/restaurants";
 
   return (
@@ -44,6 +45,9 @@ function Navbar() {
             )}
             {user.role === "DELIVERY_AGENT" && (
               <Link to="/agent" className="navbar-link">Dashboard</Link>
+            )}
+            {user.role === "ADMIN" && (
+              <Link to="/admin" className="navbar-link">Dashboard</Link>
             )}
             <span className="navbar-role-badge">{formatRole(user.role)}</span>
             <span className="navbar-email">{user.email}</span>

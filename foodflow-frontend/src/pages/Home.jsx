@@ -10,7 +10,7 @@ function Home() {
     if (user?.role === "CUSTOMER") navigate("/restaurants");
     else if (user?.role === "RESTAURANT_OWNER") navigate("/owner/restaurants");
     else if (user?.role === "DELIVERY_AGENT") navigate("/agent");
-    // Admin routing added in F7.
+    else if (user?.role === "ADMIN") navigate("/admin");
   }, [user]);
 
   return (
