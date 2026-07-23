@@ -41,7 +41,10 @@ function Navbar() {
               </>
             )}
             {user.role === "RESTAURANT_OWNER" && (
-              <Link to="/owner/restaurants" className="navbar-link">My Restaurants</Link>
+              <>
+                <Link to="/owner/restaurants" className="navbar-link">My Restaurants</Link>
+                <NotificationBell />
+              </>
             )}
             {user.role === "DELIVERY_AGENT" && (
               <Link to="/agent" className="navbar-link">Dashboard</Link>

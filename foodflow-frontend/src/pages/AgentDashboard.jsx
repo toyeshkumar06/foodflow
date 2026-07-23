@@ -21,6 +21,12 @@ function AgentDashboard() {
 
   const loadData = async () => {
     try {
+      const profileRes = await axiosInstance.get("/delivery/profile");
+      setProfile(profileRes.data);
+    } catch (err) {
+      console.error("Failed to load profile", err);
+    }
+    try {
       const orderRes = await axiosInstance.get("/delivery/orders/current");
       setCurrentOrder(orderRes.status === 204 ? null : orderRes.data);
     } catch (err) {

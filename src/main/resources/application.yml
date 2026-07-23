@@ -6,7 +6,7 @@ spring:
     name: foodflow
 
   datasource:
-    url: jdbc:mysql://localhost:3306/foodflow_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/foodflow_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: root
     password: 1234   # <-- change this to your local MySQL password
     driver-class-name: com.mysql.cj.jdbc.Driver

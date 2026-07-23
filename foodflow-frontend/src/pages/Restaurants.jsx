@@ -14,6 +14,8 @@ function Restaurants() {
       .finally(() => setLoading(false));
   }, []);
 
+  const visibleRestaurants = restaurants.filter((r) => r.status === "OPEN");
+
   return (
     <>
       <Navbar />
@@ -22,16 +24,18 @@ function Restaurants() {
 
         {loading && <p style={{ color: "var(--color-text-light)" }}>Loading restaurants...</p>}
 
-        {!loading && restaurants.length === 0 && (
-          <p style={{ color: "var(--color-text-light)" }}>No restaurants available right now.</p>
+        {!loading && visibleRestaurants.length === 0 && (
+          <p style={{ color: "var(--color-text-light)" }}>No restaurants open right now.</p>
         )}
 
         <div className="restaurant-grid">
-          {restaurants.map((r) => (
+          {visibleRestaurants.map((r) => (
             <Link to={`/restaurants/${r.id}`} key={r.id} className="restaurant-card">
-              <div className="restaurant-card-image-placeholder">
-                {r.name.charAt(0)}
-              </div>
+              {r.imageUrl ? (
+                <img src={r.imageUrl} alt={r.name} className="restaurant-card-image" />
+              ) : (
+                <div className="restaurant-card-image-placeholder">{r.name.charAt(0)}</div>
+              )}
               <div className="restaurant-card-body">
                 <h3>{r.name}</h3>
                 <p className="restaurant-card-cuisine">{r.cuisineType || "Multi-cuisine"}</p>

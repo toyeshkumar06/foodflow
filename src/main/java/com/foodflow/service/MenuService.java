@@ -29,6 +29,15 @@ public class MenuService {
         return new CategoryResponse(category.getId(), category.getName());
     }
 
+    public FoodItemResponse updateImage(Long foodItemId, String imageUrl, User owner) {
+    FoodItem item = foodItemRepository.findById(foodItemId)
+            .orElseThrow(() -> ApiException.notFound("Food item not found"));
+    restaurantService.getOwnedRestaurantOrThrow(item.getRestaurant().getId(), owner);
+    item.setImageUrl(imageUrl);
+    foodItemRepository.save(item);
+    return toFoodItemResponse(item);
+    }
+
     public FoodItemResponse createFoodItem(Long restaurantId, CreateFoodItemRequest request, User owner) {
         Restaurant restaurant = restaurantService.getOwnedRestaurantOrThrow(restaurantId, owner);
 

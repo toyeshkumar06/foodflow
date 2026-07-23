@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
+import ImageLightbox from "../ImageLightbox";
 
 function MenuTab({ restaurantId }) {
   const [menu, setMenu] = useState([]);
@@ -8,7 +9,10 @@ function MenuTab({ restaurantId }) {
   const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [showItemForm, setShowItemForm] = useState(false);
   const [categoryName, setCategoryName] = useState("");
-  const [itemForm, setItemForm] = useState({ name: "", description: "", price: "", veg: true, categoryId: "" });
+  const [itemForm, setItemForm] = useState({ name: "", description: "", price: "", veg: true, categoryId: "", imageUrl: "" });
+  const [editingImageId, setEditingImageId] = useState(null);
+  const [editImageUrl, setEditImageUrl] = useState("");
+  const [lightboxItem, setLightboxItem] = useState(null);
   const [error, setError] = useState("");
 
   const loadMenu = () => {
@@ -49,7 +53,7 @@ function MenuTab({ restaurantId }) {
         price: Number(itemForm.price),
         categoryId: Number(itemForm.categoryId),
       });
-      setItemForm({ name: "", description: "", price: "", veg: true, categoryId: "" });
+      setItemForm({ name: "", description: "", price: "", veg: true, categoryId: "", imageUrl: "" });
       setShowItemForm(false);
       loadMenu();
     } catch (err) {
@@ -57,6 +61,16 @@ function MenuTab({ restaurantId }) {
     }
   };
 
+  const saveItemImage = async (itemId) => {
+    try {
+      await axiosInstance.patch(`/restaurant-owner/food-items/${itemId}/image`, { imageUrl: editImageUrl });
+      setEditingImageId(null);
+      loadMenu();
+    } catch (err) {
+      alert("Could not update image.");
+    }
+  };
+  
   const toggleAvailability = async (item) => {
     await axiosInstance.patch(`/restaurant-owner/food-items/${item.id}/availability`, { available: !item.available });
     loadMenu();
@@ -98,7 +112,11 @@ function MenuTab({ restaurantId }) {
             <label>Category Name</label>
             <input className="input-field" value={categoryName} onChange={(e) => setCategoryName(e.target.value)} required />
           </div>
-          <button type="submit" className="btn btn-primary btn-small">Add Category</button>
+          <div className="form-group">
+            <label>Image URL (optional — paste a real photo link)</label>
+            <input className="input-field" value={itemForm.imageUrl} onChange={(e) => setItemForm({ ...itemForm, imageUrl: e.target.value })} placeholder="https://..." />
+          </div>
+          <button type="submit" className="btn btn-primary btn-small">Add Item</button>
         </form>
       )}
 
@@ -148,10 +166,21 @@ function MenuTab({ restaurantId }) {
           <div className="menu-item" key={item.id}>
             <div className="menu-item-info">
               <span className={`veg-dot ${item.veg ? "veg" : "non-veg"}`}></span>
+              {item.imageUrl && <img src={item.imageUrl} alt={item.name} className="menu-item-image clickable" onClick={() => setLightboxItem(item)} />}
               <div>
                 <p className="menu-item-name">{item.name}</p>
                 <p className="menu-item-desc">{item.categoryName} · {item.description}</p>
                 <p className="menu-item-price">₹{item.price} {item.averageRating > 0 && `· ★ ${item.averageRating}`}</p>
+                {editingImageId === item.id ? (
+                  <div style={{ display: "flex", gap: "6px", marginTop: "6px" }}>
+                    <input className="input-field" style={{ fontSize: "12px", padding: "6px" }} value={editImageUrl} onChange={(e) => setEditImageUrl(e.target.value)} placeholder="Image URL" />
+                    <button className="btn btn-primary btn-small" onClick={() => saveItemImage(item.id)}>Save</button>
+                  </div>
+                ) : (
+                  <button className="btn btn-secondary btn-small" style={{ marginTop: "6px", fontSize: "12px", padding: "4px 10px" }} onClick={() => { setEditingImageId(item.id); setEditImageUrl(item.imageUrl || ""); }}>
+                    Edit Image
+                  </button>
+                )}
               </div>
             </div>
             <div style={{ display: "flex", gap: "8px" }}>
@@ -163,6 +192,15 @@ function MenuTab({ restaurantId }) {
           </div>
         ))}
       </div>
+
+      {lightboxItem && (
+        <ImageLightbox
+          imageUrl={lightboxItem.imageUrl}
+          name={lightboxItem.name}
+          description={lightboxItem.description}
+          onClose={() => setLightboxItem(null)}
+        />
+      )}
     </div>
   );
 }

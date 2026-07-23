@@ -149,8 +149,12 @@ public class OrderService {
         cartService.clearCart(customer);
 
         notificationService.notify(customer, "Order Confirmed",
-                "Your order #" + order.getId() + " from " + restaurant.getName() + " has been placed.",
-                NotificationType.ORDER_CONFIRMED);
+        "Your order #" + order.getId() + " from " + restaurant.getName() + " has been placed.",
+        NotificationType.ORDER_CONFIRMED);
+
+        notificationService.notify(restaurant.getOwner(), "New Order Received",
+        "You have a new order #" + order.getId() + " for " + restaurant.getName() + " worth Rs." + grandTotal,
+        NotificationType.GENERAL);
 
         return toResponse(order);
     }
@@ -185,20 +189,25 @@ public class OrderService {
         validateTransition(order.getStatus(), newStatus);
         order.setStatus(newStatus);
 
-        if (newStatus == OrderStatus.PREPARING) {
+        // Retry assignment on both transitions, in case no agent was online during the first attempt
+        if ((newStatus == OrderStatus.PREPARING || newStatus == OrderStatus.READY_FOR_PICKUP) && order.getDeliveryAgent() == null) {
             deliveryAssignmentService.assignNearestAgent(order);
         }
 
         orderRepository.save(order);
 
         if (newStatus == OrderStatus.ACCEPTED) {
-            notificationService.notify(order.getCustomer(), "Order Accepted",
-                    "Your order #" + order.getId() + " has been accepted by the restaurant.",
-                    NotificationType.ORDER_ACCEPTED);
+        notificationService.notify(order.getCustomer(), "Order Accepted",
+                "Your order #" + order.getId() + " has been accepted by the restaurant.",
+                NotificationType.ORDER_ACCEPTED);
         } else if (newStatus == OrderStatus.PREPARING) {
             notificationService.notify(order.getCustomer(), "Preparing Your Food",
                     "Your order #" + order.getId() + " is being prepared.",
                     NotificationType.PREPARING);
+        } else if (newStatus == OrderStatus.REJECTED) {
+            notificationService.notify(order.getCustomer(), "Order Rejected",
+                    "Your order #" + order.getId() + " from " + order.getRestaurant().getName() + " was rejected by the restaurant.",
+                    NotificationType.GENERAL);
         }
 
         return toResponse(order);

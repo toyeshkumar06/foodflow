@@ -24,6 +24,10 @@ public class DeliveryController {
     private final DeliveryAgentService deliveryAgentService;
     private final OrderService orderService;
 
+    @GetMapping("/profile")
+    public AgentProfileResponse getProfile(@AuthenticationPrincipal User agent) {
+    return deliveryAgentService.getProfile(agent);
+    }
     @PostMapping("/go-online")
     public AgentProfileResponse goOnline(@Valid @RequestBody LocationRequest request,
                                           @AuthenticationPrincipal User agent) {

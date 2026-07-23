@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axiosInstance from "../api/axiosInstance";
 import Navbar from "../components/Navbar";
 import { useCart } from "../context/CartContext";
+import ImageLightbox from "../components/ImageLightbox";
 
 function RestaurantMenu() {
   const { id } = useParams();
@@ -10,8 +11,8 @@ function RestaurantMenu() {
   const [menu, setMenu] = useState([]);
   const [loading, setLoading] = useState(true);
   const [addingId, setAddingId] = useState(null);
-  const { addToCart, cart } = useCart();
-
+  const [lightboxItem, setLightboxItem] = useState(null);
+  const { addToCart } = useCart();
   useEffect(() => {
     Promise.all([
       axiosInstance.get(`/restaurants/${id}`),
@@ -36,7 +37,6 @@ function RestaurantMenu() {
     }
   };
 
-  // Group flat menu list into sections by category name
   const grouped = menu.reduce((acc, item) => {
     const cat = item.categoryName || "Other";
     if (!acc[cat]) acc[cat] = [];
@@ -45,20 +45,16 @@ function RestaurantMenu() {
   }, {});
 
   if (loading) {
-    return (
-      <>
-        <Navbar />
-        <div className="page-container" style={{ paddingTop: "40px" }}>
-          <p style={{ color: "var(--color-text-light)" }}>Loading menu...</p>
-        </div>
-      </>
-    );
+    return (<><Navbar /><div className="page-container" style={{ paddingTop: "40px" }}><p style={{ color: "var(--color-text-light)" }}>Loading menu...</p></div></>);
   }
 
   return (
     <>
       <Navbar />
-      <div className="page-container" style={{ paddingTop: "40px", paddingBottom: "80px" }}>
+      {restaurant?.imageUrl && (
+        <div className="restaurant-banner" style={{ backgroundImage: `url(${restaurant.imageUrl})` }}></div>
+      )}
+      <div className="page-container" style={{ paddingTop: restaurant?.imageUrl ? "24px" : "40px", paddingBottom: "80px" }}>
         <h1 style={{ fontSize: "28px" }}>{restaurant?.name}</h1>
         <p style={{ color: "var(--color-text-light)", marginBottom: "8px" }}>
           {restaurant?.cuisineType} · {restaurant?.addressLine}, {restaurant?.city}
@@ -78,6 +74,7 @@ function RestaurantMenu() {
             <div className="menu-list">
               {items.map((item) => (
                 <div className="menu-item" key={item.id}>
+                  {item.imageUrl && <img src={item.imageUrl} alt={item.name} className="menu-item-image clickable" onClick={() => setLightboxItem(item)} />}
                   <div className="menu-item-info">
                     <span className={`veg-dot ${item.veg ? "veg" : "non-veg"}`}></span>
                     <div>
@@ -99,6 +96,15 @@ function RestaurantMenu() {
           </div>
         ))}
       </div>
+
+      {lightboxItem && (
+        <ImageLightbox
+          imageUrl={lightboxItem.imageUrl}
+          name={lightboxItem.name}
+          description={lightboxItem.description}
+          onClose={() => setLightboxItem(null)}
+        />
+      )}
     </>
   );
 }

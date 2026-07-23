@@ -32,7 +32,6 @@ public class Restaurant {
     private LocalTime openingTime;
     private LocalTime closingTime;
 
-    // Needed for distance calculation (delivery assignment, ETA)
     private Double latitude;
     private Double longitude;
 
@@ -41,6 +40,8 @@ public class Restaurant {
 
     @Builder.Default
     private Double averageRating = 0.0;
+
+    private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)

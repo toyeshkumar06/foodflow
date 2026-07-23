@@ -32,6 +32,7 @@ public class RestaurantService {
                 .closingTime(request.getClosingTime() != null ? LocalTime.parse(request.getClosingTime()) : null)
                 .latitude(request.getLatitude())
                 .longitude(request.getLongitude())
+                .imageUrl(request.getImageUrl())
                 .status(RestaurantStatus.CLOSED)
                 .averageRating(0.0)
                 .owner(owner)
@@ -52,6 +53,13 @@ public class RestaurantService {
         Restaurant restaurant = getOwnedRestaurantOrThrow(restaurantId, owner);
         restaurant.setLatitude(latitude);
         restaurant.setLongitude(longitude);
+        restaurantRepository.save(restaurant);
+        return toResponse(restaurant);
+    }
+
+    public RestaurantResponse updateImage(Long restaurantId, String imageUrl, User owner) {
+        Restaurant restaurant = getOwnedRestaurantOrThrow(restaurantId, owner);
+        restaurant.setImageUrl(imageUrl);
         restaurantRepository.save(restaurant);
         return toResponse(restaurant);
     }
@@ -86,7 +94,7 @@ public class RestaurantService {
                 r.getId(), r.getName(), r.getDescription(), r.getCuisineType(),
                 r.getAddressLine(), r.getCity(), r.getPincode(), r.getStatus(),
                 r.getOpeningTime(), r.getClosingTime(), r.getAverageRating(), r.getOwner().getId(),
-                r.getLatitude(), r.getLongitude()
+                r.getLatitude(), r.getLongitude(), r.getImageUrl()
         );
     }
 }

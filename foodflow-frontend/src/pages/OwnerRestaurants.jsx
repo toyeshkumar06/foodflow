@@ -10,7 +10,7 @@ function OwnerRestaurants() {
   const [error, setError] = useState("");
   const [form, setForm] = useState({
     name: "", description: "", cuisineType: "", addressLine: "", city: "", pincode: "",
-    openingTime: "09:00", closingTime: "23:00", latitude: 28.6139, longitude: 77.2090,
+    openingTime: "09:00", closingTime: "23:00", latitude: 28.6139, longitude: 77.2090, imageUrl: "",
   });
 
   const loadRestaurants = () => {
@@ -70,6 +70,10 @@ function OwnerRestaurants() {
               <label>Pincode</label>
               <input className="input-field" value={form.pincode} onChange={(e) => setForm({ ...form, pincode: e.target.value })} />
             </div>
+            <div className="form-group">
+              <label>Image URL (paste a real photo link, e.g. from Unsplash)</label>
+              <input className="input-field" value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} placeholder="https://..." />
+            </div>
             <p style={{ fontSize: "12px", color: "var(--color-text-light)", marginBottom: "12px" }}>
               Location is pre-filled with test coordinates (Delhi area) — leave as-is unless you know real coordinates.
             </p>
@@ -86,7 +90,11 @@ function OwnerRestaurants() {
         <div className="restaurant-grid">
           {restaurants.map((r) => (
             <Link to={`/owner/restaurants/${r.id}`} key={r.id} className="restaurant-card">
-              <div className="restaurant-card-image-placeholder">{r.name.charAt(0)}</div>
+              {r.imageUrl ? (
+                <img src={r.imageUrl} alt={r.name} className="restaurant-card-image" />
+              ) : (
+                <div className="restaurant-card-image-placeholder">{r.name.charAt(0)}</div>
+              )}
               <div className="restaurant-card-body">
                 <h3>{r.name}</h3>
                 <p className="restaurant-card-cuisine">{r.cuisineType || "Multi-cuisine"}</p>

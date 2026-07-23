@@ -22,6 +22,7 @@ public class RestaurantDtos {
         private String closingTime;
         private Double latitude;
         private Double longitude;
+        private String imageUrl;
     }
 
     @Data
@@ -33,6 +34,11 @@ public class RestaurantDtos {
     public static class UpdateLocationRequest {
         @NotNull private Double latitude;
         @NotNull private Double longitude;
+    }
+
+    @Data
+    public static class UpdateImageRequest {
+        @NotBlank private String imageUrl;
     }
 
     @Data
@@ -52,5 +58,6 @@ public class RestaurantDtos {
         private Long ownerId;
         private Double latitude;
         private Double longitude;
+        private String imageUrl;
     }
 }

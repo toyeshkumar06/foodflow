@@ -698,3 +698,91 @@ select.input-field option {
   font-weight: 700;
   color: var(--color-primary);
 }
+
+/* Restaurant/food images */
+.restaurant-card-image {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+}
+
+.restaurant-banner {
+  width: 100%;
+  height: 220px;
+  background-size: cover;
+  background-position: center;
+}
+
+.menu-item-image {
+  width: 96px;
+  height: 96px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.menu-item-image.clickable {
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.menu-item-image.clickable:hover {
+  transform: scale(1.05);
+}
+
+.menu-item {
+  align-items: center;
+}
+
+.menu-item-info {
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.menu-item-info > div {
+  min-width: 0;
+}
+
+.menu-item-name,
+.menu-item-desc,
+.menu-item-price {
+  text-align: left;
+}
+
+/* Image lightbox */
+.lightbox-content {
+  background: var(--color-card);
+  border-radius: var(--radius);
+  overflow: hidden;
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+  border: 1px solid var(--color-border);
+}
+
+.lightbox-image {
+  width: 100%;
+  max-height: 60vh;
+  object-fit: cover;
+  display: block;
+}
+
+.lightbox-caption {
+  padding: 20px;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  z-index: 10;
+}

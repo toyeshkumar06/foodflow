@@ -42,6 +42,9 @@ public class DeliveryAgentService {
         return toResponse(profile);
     }
 
+    public AgentProfileResponse getProfile(User agent) {
+    return toResponse(getOrCreateProfile(agent));
+    }
     public BigDecimal getEarnings(User agent) {
         return getOrCreateProfile(agent).getTotalEarnings();
     }

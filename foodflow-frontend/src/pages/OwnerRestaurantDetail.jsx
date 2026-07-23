@@ -19,6 +19,14 @@ function OwnerRestaurantDetail() {
 
   useEffect(() => { loadRestaurant(); }, [id]);
 
+  const handleImageUpdate = async (newUrl) => {
+    try {
+      await axiosInstance.patch(`/restaurant-owner/restaurants/${id}/image`, { imageUrl: newUrl });
+      loadRestaurant();
+    } catch (err) {
+      alert(err.response?.data?.message || "Could not update image.");
+    }
+  };
   const handleStatusChange = async (newStatus) => {
     setUpdatingStatus(true);
     try {
@@ -43,10 +51,14 @@ function OwnerRestaurantDetail() {
           ← Back to My Restaurants
         </button>
 
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
-          <div>
+        <div style={{ display: "flex", gap: "20px", marginBottom: "24px", alignItems: "flex-start" }}>
+          {restaurant.imageUrl && (
+            <img src={restaurant.imageUrl} alt={restaurant.name} style={{ width: "140px", height: "100px", objectFit: "cover", borderRadius: "8px" }} />
+          )}
+          <div style={{ flex: 1 }}>
             <h1 style={{ fontSize: "28px" }}>{restaurant.name}</h1>
-            <p style={{ color: "var(--color-text-light)" }}>{restaurant.addressLine}, {restaurant.city}</p>
+            <p style={{ color: "var(--color-text-light)", marginBottom: "8px" }}>{restaurant.addressLine}, {restaurant.city}</p>
+            <EditImageInline currentUrl={restaurant.imageUrl} onSave={handleImageUpdate} />
           </div>
           <select
             className="input-field"
@@ -75,6 +87,22 @@ function OwnerRestaurantDetail() {
         </div>
       </div>
     </>
+  );
+}
+
+function EditImageInline({ currentUrl, onSave }) {
+  const [editing, setEditing] = useState(false);
+  const [url, setUrl] = useState(currentUrl || "");
+
+  if (!editing) {
+    return <button className="btn btn-secondary btn-small" onClick={() => setEditing(true)}>Edit Image</button>;
+  }
+
+  return (
+    <div style={{ display: "flex", gap: "8px", maxWidth: "400px" }}>
+      <input className="input-field" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="Paste image URL" />
+      <button className="btn btn-primary btn-small" onClick={() => { onSave(url); setEditing(false); }}>Save</button>
+    </div>
   );
 }
 

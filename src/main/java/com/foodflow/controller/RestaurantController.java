@@ -38,6 +38,13 @@ public class RestaurantController {
         return restaurantService.updateLocation(id, request.getLatitude(), request.getLongitude(), owner);
     }
 
+    @PatchMapping("/api/restaurant-owner/restaurants/{id}/image")
+    public RestaurantResponse updateImage(@PathVariable Long id,
+                                        @Valid @RequestBody UpdateImageRequest request,
+                                        @AuthenticationPrincipal User owner) {
+        return restaurantService.updateImage(id, request.getImageUrl(), owner);
+    }
+
     @GetMapping("/api/restaurant-owner/restaurants/mine")
     public List<RestaurantResponse> getMyRestaurants(@AuthenticationPrincipal User owner) {
         return restaurantService.getMyRestaurants(owner);

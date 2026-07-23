@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,6 +33,13 @@ public class MenuController {
                                             @Valid @RequestBody CreateFoodItemRequest request,
                                             @AuthenticationPrincipal User owner) {
         return menuService.createFoodItem(restaurantId, request, owner);
+    }
+
+    @PatchMapping("/api/restaurant-owner/food-items/{id}/image")
+    public FoodItemResponse updateItemImage(@PathVariable Long id,
+                                            @RequestBody Map<String, String> body,
+                                            @AuthenticationPrincipal User owner) {
+        return menuService.updateImage(id, body.get("imageUrl"), owner);
     }
 
     @PatchMapping("/api/restaurant-owner/food-items/{id}/availability")
