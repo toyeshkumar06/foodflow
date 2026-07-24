@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../api/axiosInstance";
 import Navbar from "../components/Navbar";
@@ -12,6 +12,7 @@ function OrderDetail() {
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(false);
   const [ratingModal, setRatingModal] = useState(null); // { type, label, foodItemId }
+  const autoPromptShown = useRef(false);
   const navigate = useNavigate();
 
   const loadOrder = () => {
@@ -19,6 +20,13 @@ function OrderDetail() {
       const found = res.data.find((o) => o.id === Number(id));
       setOrder(found);
       setLoading(false);
+
+      // Auto-prompt for a rating the first time we see this order as DELIVERED,
+      // so the customer doesn't have to remember to come back and rate manually.
+      if (found && found.status === "DELIVERED" && !autoPromptShown.current) {
+        autoPromptShown.current = true;
+        setRatingModal({ type: "restaurant", label: found.restaurantName });
+      }
     });
   };
 
