@@ -3,6 +3,7 @@ package com.foodflow.controller;
 import com.foodflow.dto.OrderDtos.OrderResponse;
 import com.foodflow.dto.OrderDtos.UpdateOrderStatusRequest;
 import com.foodflow.entity.User;
+import com.foodflow.service.AccountStatsService;
 import com.foodflow.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,12 @@ import java.util.List;
 public class RestaurantOrderController {
 
     private final OrderService orderService;
+    private final AccountStatsService accountStatsService;
 
+    @GetMapping("/quick-stats")
+    public com.foodflow.dto.AccountStatsDtos.OwnerQuickStatsResponse getQuickStats(@AuthenticationPrincipal User owner) {
+    return accountStatsService.getOwnerQuickStats(owner);
+    }
     @GetMapping("/restaurants/{restaurantId}/orders")
     public List<OrderResponse> getIncomingOrders(@PathVariable Long restaurantId,
                                                   @AuthenticationPrincipal User owner) {

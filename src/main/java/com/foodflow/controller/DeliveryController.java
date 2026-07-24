@@ -5,6 +5,7 @@ import com.foodflow.dto.DeliveryDtos.LocationRequest;
 import com.foodflow.dto.OrderDtos.OrderResponse;
 import com.foodflow.dto.OrderDtos.UpdateOrderStatusRequest;
 import com.foodflow.entity.User;
+import com.foodflow.service.AccountStatsService;
 import com.foodflow.service.DeliveryAgentService;
 import com.foodflow.service.OrderService;
 import jakarta.validation.Valid;
@@ -23,10 +24,15 @@ public class DeliveryController {
 
     private final DeliveryAgentService deliveryAgentService;
     private final OrderService orderService;
+    private final AccountStatsService accountStatsService;
 
     @GetMapping("/profile")
     public AgentProfileResponse getProfile(@AuthenticationPrincipal User agent) {
     return deliveryAgentService.getProfile(agent);
+    }
+    @GetMapping("/quick-stats")
+    public com.foodflow.dto.AccountStatsDtos.AgentQuickStatsResponse getQuickStats(@AuthenticationPrincipal User agent) {
+    return accountStatsService.getAgentQuickStats(agent);
     }
     @PostMapping("/go-online")
     public AgentProfileResponse goOnline(@Valid @RequestBody LocationRequest request,

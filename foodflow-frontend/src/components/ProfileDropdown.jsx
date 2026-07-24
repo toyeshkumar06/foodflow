@@ -1,13 +1,23 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import axiosInstance from "../api/axiosInstance";
 import Avatar from "./Avatar";
 
 function ProfileDropdown() {
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
+  const [stats, setStats] = useState(null);
   const wrapperRef = useRef(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user.role === "RESTAURANT_OWNER") {
+      axiosInstance.get("/restaurant-owner/quick-stats").then((res) => setStats(res.data)).catch(() => {});
+    } else if (user.role === "DELIVERY_AGENT") {
+      axiosInstance.get("/delivery/quick-stats").then((res) => setStats(res.data)).catch(() => {});
+    }
+  }, [user.role]);
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -54,6 +64,28 @@ function ProfileDropdown() {
               <button className="profile-dropdown-item" onClick={() => alert("Coming soon — dishes you rated 4+ stars will show here!")}>
                 🍽️ Liked Dishes
               </button>
+            </>
+          )}
+
+          {user.role === "RESTAURANT_OWNER" && stats && (
+            <>
+              <div className="profile-dropdown-divider"></div>
+              <div className="profile-dropdown-stats">
+                <p className="stat-line"><strong>Today:</strong> {stats.todayOrders} orders · ₹{stats.todayRevenue}</p>
+                {stats.topRatedItemName && (
+                  <p className="stat-line"><strong>Top Rated:</strong> {stats.topRatedItemName} ★{stats.topRatedItemRating}</p>
+                )}
+              </div>
+            </>
+          )}
+
+          {user.role === "DELIVERY_AGENT" && stats && (
+            <>
+              <div className="profile-dropdown-divider"></div>
+              <div className="profile-dropdown-stats">
+                <p className="stat-line"><strong>Today:</strong> {stats.deliveriesToday} deliveries · ₹{stats.todayEarnings} earned</p>
+                <p className="stat-line"><strong>Total Deliveries:</strong> {stats.totalDeliveries}</p>
+              </div>
             </>
           )}
 

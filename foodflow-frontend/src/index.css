@@ -954,3 +954,16 @@ select.input-field option {
   background: rgba(255, 107, 107, 0.1);
   color: var(--color-error);
 }
+
+.profile-dropdown-stats {
+  padding: 10px 16px;
+}
+
+.stat-line {
+  font-size: 13px;
+  color: var(--color-text-light);
+  margin-bottom: 6px;
+}
+.stat-line strong {
+  color: var(--color-text);
+}
