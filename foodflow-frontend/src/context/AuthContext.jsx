@@ -14,6 +14,7 @@ export function AuthProvider({ children }) {
       email: authResponse.email,
       role: authResponse.role,
       userId: authResponse.userId,
+      name: authResponse.name || authResponse.email.split("@")[0],
     };
     localStorage.setItem("token", userData.token);
     localStorage.setItem("user", JSON.stringify(userData));

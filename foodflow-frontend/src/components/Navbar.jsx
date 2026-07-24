@@ -1,22 +1,12 @@
-import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
-import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 import NotificationBell from "./NotificationBell";
+import ProfileDropdown from "./ProfileDropdown";
 
 function Navbar() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const { itemCount } = useCart();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
-
-  const formatRole = (role) => {
-    if (!role) return "";
-    return role.replace("_", " ").toLowerCase();
-  };
 
   const logoLink =
     user?.role === "RESTAURANT_OWNER" ? "/owner/restaurants" :
@@ -52,9 +42,7 @@ function Navbar() {
             {user.role === "ADMIN" && (
               <Link to="/admin" className="navbar-link">Dashboard</Link>
             )}
-            <span className="navbar-role-badge">{formatRole(user.role)}</span>
-            <span className="navbar-email">{user.email}</span>
-            <button className="btn btn-secondary" onClick={handleLogout}>Logout</button>
+            <ProfileDropdown />
           </div>
         )}
       </div>
