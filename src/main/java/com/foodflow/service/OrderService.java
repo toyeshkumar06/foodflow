@@ -236,10 +236,10 @@ public class OrderService {
                     "Your order #" + order.getId() + " is on the way.",
                     NotificationType.OUT_FOR_DELIVERY);
         } else if (newStatus == OrderStatus.DELIVERED) {
-            notificationService.notify(order.getCustomer(), "Delivered",
-                    "Your order #" + order.getId() + " has been delivered. Enjoy your meal!",
-                    NotificationType.DELIVERED);
-        }
+        notificationService.notify(order.getCustomer(), "Delivered",
+            "Your order #" + order.getId() + " has been delivered. Enjoy your meal! Please rate your experience.",
+            NotificationType.DELIVERED);
+}
 
         return toResponse(order);
     }

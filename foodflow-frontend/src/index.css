@@ -786,3 +786,71 @@ select.input-field option {
   font-size: 16px;
   z-index: 10;
 }
+
+/* Welcome / landing page */
+.welcome-hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  background: linear-gradient(-45deg, #1a1a1f, #2a1810, #1f1a1a, #2a1c14);
+  background-size: 400% 400%;
+  animation: gradientShift 12s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.welcome-content {
+  max-width: 500px;
+}
+
+.welcome-logo {
+  font-family: 'Poppins', sans-serif;
+  font-size: 56px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 16px;
+  letter-spacing: -1px;
+}
+
+.welcome-slogan {
+  font-size: 20px;
+  color: var(--color-text);
+  margin-bottom: 32px;
+  font-weight: 500;
+}
+
+.welcome-actions {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+}
+
+.welcome-actions .btn {
+  width: auto;
+  padding: 14px 32px;
+}
+
+.welcome-btn-light {
+  background: transparent;
+  border: 1.5px solid var(--color-text-light);
+  color: var(--color-text);
+}
+.welcome-btn-light:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.welcome-credit {
+  position: fixed;
+  bottom: 20px;
+  font-size: 13px;
+  color: var(--color-text-light);
+}
