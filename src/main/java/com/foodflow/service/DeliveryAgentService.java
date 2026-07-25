@@ -7,14 +7,17 @@ import com.foodflow.exception.ApiException;
 import com.foodflow.repository.DeliveryAgentProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class DeliveryAgentService {
 
     private final DeliveryAgentProfileRepository profileRepository;
+    private final DeliveryAssignmentService deliveryAssignmentService;
 
     public AgentProfileResponse goOnline(User agent, double latitude, double longitude) {
         DeliveryAgentProfile profile = getOrCreateProfile(agent);
@@ -22,6 +25,9 @@ public class DeliveryAgentService {
         profile.setCurrentLatitude(latitude);
         profile.setCurrentLongitude(longitude);
         profileRepository.save(profile);
+
+        deliveryAssignmentService.retryOrphanedAssignments();
+
         return toResponse(profile);
     }
 
@@ -42,11 +48,12 @@ public class DeliveryAgentService {
         return toResponse(profile);
     }
 
-    public AgentProfileResponse getProfile(User agent) {
-    return toResponse(getOrCreateProfile(agent));
-    }
     public BigDecimal getEarnings(User agent) {
         return getOrCreateProfile(agent).getTotalEarnings();
+    }
+
+    public AgentProfileResponse getProfile(User agent) {
+        return toResponse(getOrCreateProfile(agent));
     }
 
     public DeliveryAgentProfile getOrCreateProfile(User agent) {

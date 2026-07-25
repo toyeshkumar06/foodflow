@@ -18,6 +18,15 @@ function Checkout() {
 
   const [couponCode, setCouponCode] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("UPI");
+
+  // Payment detail fields (purely for realism — nothing is actually transmitted
+  // or stored server-side; the backend simulates payment success regardless)
+  const [upiId, setUpiId] = useState("");
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardExpiry, setCardExpiry] = useState("");
+  const [cardCvv, setCardCvv] = useState("");
+  const [cardName, setCardName] = useState("");
+
   const [placing, setPlacing] = useState(false);
   const [error, setError] = useState("");
 
@@ -46,9 +55,30 @@ function Checkout() {
     }
   };
 
+  const formatCardNumber = (value) => {
+    const digits = value.replace(/\D/g, "").slice(0, 16);
+    return digits.replace(/(\d{4})(?=\d)/g, "$1 ").trim();
+  };
+
+  const formatExpiry = (value) => {
+    const digits = value.replace(/\D/g, "").slice(0, 4);
+    if (digits.length >= 3) return digits.slice(0, 2) + "/" + digits.slice(2);
+    return digits;
+  };
+
+  const isPaymentDetailValid = () => {
+    if (paymentMethod === "UPI") return upiId.trim().includes("@");
+    if (paymentMethod === "CARD") return cardNumber.replace(/\s/g, "").length === 16 && cardExpiry.length === 5 && cardCvv.length === 3 && cardName.trim().length > 0;
+    return true; // COD and WALLET need no extra input
+  };
+
   const handlePlaceOrder = async () => {
     if (!selectedAddressId) {
       setError("Please select or add a delivery address.");
+      return;
+    }
+    if (!isPaymentDetailValid()) {
+      setError("Please fill in valid payment details.");
       return;
     }
     setError("");
@@ -121,9 +151,6 @@ function Checkout() {
                 <label>Pincode</label>
                 <input className="input-field" value={newAddress.pincode} onChange={(e) => setNewAddress({ ...newAddress, pincode: e.target.value })} />
               </div>
-              <p style={{ fontSize: "12px", color: "var(--color-text-light)", marginBottom: "12px" }}>
-                Latitude/Longitude are pre-filled with test coordinates (Delhi area) since we don't have real map picking yet — leave as-is for testing.
-              </p>
               <button type="submit" className="btn btn-primary btn-small">Save Address</button>
             </form>
           )}
@@ -149,6 +176,61 @@ function Checkout() {
               </label>
             ))}
           </div>
+
+          {paymentMethod === "UPI" && (
+            <div className="payment-detail-block">
+              <div className="upi-qr-box">
+                <div className="upi-qr-pattern"></div>
+                <p style={{ fontSize: "12px", color: "var(--color-text-light)", marginTop: "8px" }}>Scan to pay (demo)</p>
+              </div>
+              <div className="form-group">
+                <label>UPI ID</label>
+                <input className="input-field" placeholder="yourname@upi" value={upiId} onChange={(e) => setUpiId(e.target.value)} />
+              </div>
+            </div>
+          )}
+
+          {paymentMethod === "CARD" && (
+            <div className="payment-detail-block">
+              <div className="form-group">
+                <label>Name on Card</label>
+                <input className="input-field" placeholder="John Doe" value={cardName} onChange={(e) => setCardName(e.target.value)} />
+              </div>
+              <div className="form-group">
+                <label>Card Number</label>
+                <input className="input-field" placeholder="1234 5678 9012 3456" value={cardNumber} onChange={(e) => setCardNumber(formatCardNumber(e.target.value))} />
+              </div>
+              <div style={{ display: "flex", gap: "12px" }}>
+                <div className="form-group" style={{ flex: 1 }}>
+                  <label>Expiry</label>
+                  <input className="input-field" placeholder="MM/YY" value={cardExpiry} onChange={(e) => setCardExpiry(formatExpiry(e.target.value))} />
+                </div>
+                <div className="form-group" style={{ flex: 1 }}>
+                  <label>CVV</label>
+                  <input className="input-field" type="password" placeholder="123" maxLength={3} value={cardCvv} onChange={(e) => setCardCvv(e.target.value.replace(/\D/g, ""))} />
+                </div>
+              </div>
+              <p style={{ fontSize: "12px", color: "var(--color-text-light)" }}>
+                This is a demo checkout — no real card data is transmitted or stored.
+              </p>
+            </div>
+          )}
+
+          {paymentMethod === "CASH_ON_DELIVERY" && (
+            <div className="payment-detail-block">
+              <div className="cod-notice">
+                💵 Please keep exact change ready to avoid hassle for your delivery agent.
+              </div>
+            </div>
+          )}
+
+          {paymentMethod === "WALLET" && (
+            <div className="payment-detail-block">
+              <div className="cod-notice">
+                👛 Your FoodFlow Wallet balance will be used for this order.
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="card">
@@ -157,7 +239,7 @@ function Checkout() {
             <span>₹{cart.itemsTotal}</span>
           </div>
           <p style={{ fontSize: "13px", color: "var(--color-text-light)", marginTop: "8px" }}>
-            Delivery charge, discount, and final total will be calculated when you place the order (surge pricing and coupon validation happen server-side).
+            Delivery charge, discount, and final total will be calculated when you place the order.
           </p>
         </div>
 
