@@ -14,4 +14,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     long countByStatusIn(List<OrderStatus> statuses);
     List<Order> findByStatus(OrderStatus status);
     List<Order> findByRestaurantIdAndStatus(Long restaurantId, OrderStatus status);
+    List<Order> findByStatusInAndDeliveryAgentIsNull(List<OrderStatus> statuses);
 }

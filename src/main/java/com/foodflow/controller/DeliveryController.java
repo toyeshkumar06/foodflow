@@ -1,5 +1,6 @@
 package com.foodflow.controller;
 
+import com.foodflow.dto.AccountStatsDtos.AgentQuickStatsResponse;
 import com.foodflow.dto.DeliveryDtos.AgentProfileResponse;
 import com.foodflow.dto.DeliveryDtos.LocationRequest;
 import com.foodflow.dto.OrderDtos.OrderResponse;
@@ -28,12 +29,14 @@ public class DeliveryController {
 
     @GetMapping("/profile")
     public AgentProfileResponse getProfile(@AuthenticationPrincipal User agent) {
-    return deliveryAgentService.getProfile(agent);
+        return deliveryAgentService.getProfile(agent);
     }
+
     @GetMapping("/quick-stats")
-    public com.foodflow.dto.AccountStatsDtos.AgentQuickStatsResponse getQuickStats(@AuthenticationPrincipal User agent) {
-    return accountStatsService.getAgentQuickStats(agent);
+    public AgentQuickStatsResponse getQuickStats(@AuthenticationPrincipal User agent) {
+        return accountStatsService.getAgentQuickStats(agent);
     }
+
     @PostMapping("/go-online")
     public AgentProfileResponse goOnline(@Valid @RequestBody LocationRequest request,
                                           @AuthenticationPrincipal User agent) {

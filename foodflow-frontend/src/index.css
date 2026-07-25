@@ -967,3 +967,42 @@ select.input-field option {
 .stat-line strong {
   color: var(--color-text);
 }
+
+/* Elaborate payment UI */
+.payment-detail-block {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+.upi-qr-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.upi-qr-pattern {
+  width: 140px;
+  height: 140px;
+  background-image:
+    linear-gradient(45deg, var(--color-text) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--color-text) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--color-text) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--color-text) 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  opacity: 0.85;
+}
+
+.cod-notice {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
