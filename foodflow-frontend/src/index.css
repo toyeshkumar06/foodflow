@@ -1006,3 +1006,70 @@ select.input-field option {
   font-size: 14px;
   font-weight: 500;
 }
+
+/* Filters & sorting */
+.filter-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.filter-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  background: var(--color-card);
+  border: 1.5px solid var(--color-border);
+  color: var(--color-text-light);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-chip:hover {
+  border-color: var(--color-primary);
+}
+.filter-chip.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+
+.sort-select {
+  width: auto;
+  min-width: 160px;
+}
+
+.restaurant-card-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.tag-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+.tag-new {
+  background: rgba(91, 141, 239, 0.15);
+  color: #5B8DEF;
+}
+.tag-reordered {
+  background: rgba(74, 222, 158, 0.15);
+  color: var(--color-success);
+}
+.tag-price {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
