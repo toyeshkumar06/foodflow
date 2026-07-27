@@ -23,30 +23,45 @@ function AdminDashboard() {
 
         {overview && (
           <>
-            <div className="analytics-grid">
-              <div className="card analytics-stat">
-                <p className="analytics-stat-label">Total Revenue (Delivered)</p>
-                <p className="analytics-stat-value">₹{overview.totalRevenue}</p>
+            <div className="admin-stat-grid">
+              <div className="card admin-stat-card">
+                <div className="admin-stat-icon" style={{ background: "rgba(255, 107, 74, 0.15)" }}>💰</div>
+                <div>
+                  <p className="analytics-stat-label">Total Revenue</p>
+                  <p className="analytics-stat-value">₹{overview.totalRevenue}</p>
+                </div>
               </div>
-              <div className="card analytics-stat">
-                <p className="analytics-stat-label">Total Orders (Delivered)</p>
-                <p className="analytics-stat-value">{overview.totalOrders}</p>
+              <div className="card admin-stat-card">
+                <div className="admin-stat-icon" style={{ background: "rgba(74, 222, 158, 0.15)" }}>📦</div>
+                <div>
+                  <p className="analytics-stat-label">Total Orders</p>
+                  <p className="analytics-stat-value">{overview.totalOrders}</p>
+                </div>
               </div>
             </div>
 
             <div className="card" style={{ marginTop: "20px" }}>
-              <h3 style={{ marginBottom: "12px" }}>Platform Highlights</h3>
-              <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid var(--color-border)" }}>
-                <span style={{ color: "var(--color-text-light)" }}>Most Popular Restaurant</span>
-                <strong>{overview.mostPopularRestaurant}</strong>
+              <h3 style={{ marginBottom: "16px" }}>Platform Highlights</h3>
+              <div className="highlight-row">
+                <span className="highlight-icon">🏆</span>
+                <div>
+                  <p className="stat-line" style={{ marginBottom: "2px" }}>Most Popular Restaurant</p>
+                  <p style={{ fontWeight: 600 }}>{overview.mostPopularRestaurant}</p>
+                </div>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid var(--color-border)" }}>
-                <span style={{ color: "var(--color-text-light)" }}>Most Popular Food</span>
-                <strong>{overview.mostPopularFood}</strong>
+              <div className="highlight-row">
+                <span className="highlight-icon">🍽️</span>
+                <div>
+                  <p className="stat-line" style={{ marginBottom: "2px" }}>Most Popular Food</p>
+                  <p style={{ fontWeight: 600 }}>{overview.mostPopularFood}</p>
+                </div>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 0" }}>
-                <span style={{ color: "var(--color-text-light)" }}>Most Active Customer</span>
-                <strong>{overview.mostActiveCustomer}</strong>
+              <div className="highlight-row" style={{ borderBottom: "none" }}>
+                <span className="highlight-icon">👤</span>
+                <div>
+                  <p className="stat-line" style={{ marginBottom: "2px" }}>Most Active Customer</p>
+                  <p style={{ fontWeight: 600 }}>{overview.mostActiveCustomer}</p>
+                </div>
               </div>
             </div>
           </>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import axiosInstance from "../api/axiosInstance";
 import Navbar from "../components/Navbar";
 
@@ -20,6 +21,15 @@ function AgentHistory() {
     });
   }, []);
 
+  // Group deliveries by date for a simple bar chart of daily order counts
+  const chartData = Object.entries(
+    history.reduce((acc, order) => {
+      const date = new Date(order.createdAt).toISOString().slice(5, 10);
+      acc[date] = (acc[date] || 0) + 1;
+      return acc;
+    }, {})
+  ).map(([date, count]) => ({ date, deliveries: count }));
+
   return (
     <>
       <Navbar />
@@ -30,10 +40,30 @@ function AgentHistory() {
 
         <h1 style={{ fontSize: "28px", marginBottom: "20px" }}>History & Earnings</h1>
 
-        <div className="card analytics-stat" style={{ marginBottom: "24px" }}>
-          <p className="analytics-stat-label">Total Earnings</p>
-          <p className="analytics-stat-value">₹{earnings}</p>
+        <div className="analytics-grid" style={{ marginBottom: "24px" }}>
+          <div className="card analytics-stat">
+            <p className="analytics-stat-label">Total Earnings</p>
+            <p className="analytics-stat-value">₹{earnings}</p>
+          </div>
+          <div className="card analytics-stat">
+            <p className="analytics-stat-label">Total Deliveries</p>
+            <p className="analytics-stat-value">{history.length}</p>
+          </div>
         </div>
+
+        {chartData.length > 0 && (
+          <div className="card" style={{ marginBottom: "24px" }}>
+            <h3 style={{ marginBottom: "16px" }}>Deliveries by Day</h3>
+            <ResponsiveContainer width="100%" height={200}>
+              <BarChart data={chartData}>
+                <XAxis dataKey="date" stroke="var(--color-text-light)" fontSize={12} />
+                <YAxis stroke="var(--color-text-light)" fontSize={12} allowDecimals={false} />
+                <Tooltip contentStyle={{ background: "var(--color-card)", border: "1px solid var(--color-border)", borderRadius: "8px" }} />
+                <Bar dataKey="deliveries" fill="#4ADE9E" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
 
         <h3 style={{ marginBottom: "12px" }}>Delivered Orders</h3>
         {loading && <p style={{ color: "var(--color-text-light)" }}>Loading...</p>}
