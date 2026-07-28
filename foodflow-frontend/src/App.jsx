@@ -15,6 +15,7 @@ import AgentDashboard from "./pages/AgentDashboard";
 import AgentHistory from "./pages/AgentHistory";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminCoupons from "./pages/AdminCoupons";
+import MyCollection from "./pages/MyCollection";
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth();
@@ -34,6 +35,7 @@ function App() {
         <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
         <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
         <Route path="/orders/:id" element={<ProtectedRoute><OrderDetail /></ProtectedRoute>} />
+        <Route path="/collection" element={<ProtectedRoute><MyCollection /></ProtectedRoute>} />
         <Route path="/owner/restaurants" element={<ProtectedRoute><OwnerRestaurants /></ProtectedRoute>} />
         <Route path="/owner/restaurants/:id" element={<ProtectedRoute><OwnerRestaurantDetail /></ProtectedRoute>} />
         <Route path="/agent" element={<ProtectedRoute><AgentDashboard /></ProtectedRoute>} />

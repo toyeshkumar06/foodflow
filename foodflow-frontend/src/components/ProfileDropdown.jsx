@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import axiosInstance from "../api/axiosInstance";
 import Avatar from "./Avatar";
@@ -58,12 +58,12 @@ function ProfileDropdown() {
           {user.role === "CUSTOMER" && (
             <>
               <div className="profile-dropdown-divider"></div>
-              <button className="profile-dropdown-item" onClick={() => alert("Coming soon — bookmark your favorite restaurants!")}>
+              <Link to="/collection?tab=favorites" className="profile-dropdown-item" onClick={() => setOpen(false)}>
                 ⭐ My Collection
-              </button>
-              <button className="profile-dropdown-item" onClick={() => alert("Coming soon — dishes you rated 4+ stars will show here!")}>
+              </Link>
+              <Link to="/collection?tab=dishes" className="profile-dropdown-item" onClick={() => setOpen(false)}>
                 🍽️ Liked Dishes
-              </button>
+              </Link>
             </>
           )}
 
