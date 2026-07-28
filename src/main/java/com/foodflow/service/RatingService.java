@@ -1,5 +1,6 @@
 package com.foodflow.service;
 
+import com.foodflow.dto.CollectionDtos.LikedDishResponse;
 import com.foodflow.dto.RatingDtos.RateRequest;
 import com.foodflow.dto.RatingDtos.RatingResponse;
 import com.foodflow.entity.*;
@@ -8,6 +9,9 @@ import com.foodflow.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -62,6 +66,22 @@ public class RatingService {
         });
 
         return toResponse(rating, customer);
+    }
+
+    // Dishes the customer rated 4 stars or higher — treated as their "liked" list
+    public List<LikedDishResponse> getLikedDishes(User customer) {
+        List<Rating> likedRatings = ratingRepository.findByCustomerIdAndTargetTypeAndStarsGreaterThanEqual(
+                customer.getId(), RatingTargetType.FOOD_ITEM, 4);
+
+        List<LikedDishResponse> result = new ArrayList<>();
+        for (Rating r : likedRatings) {
+            foodItemRepository.findById(r.getTargetId()).ifPresent(item ->
+                    result.add(new LikedDishResponse(
+                            item.getId(), item.getName(), item.getImageUrl(), item.getPrice(),
+                            item.getRestaurant().getName(), item.getRestaurant().getId(), r.getStars()
+                    )));
+        }
+        return result;
     }
 
     private Rating saveRating(Order order, User customer, RatingTargetType type, Long targetId, RateRequest request) {

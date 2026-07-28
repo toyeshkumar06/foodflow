@@ -16,6 +16,7 @@ function Restaurants() {
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState("all");
   const [sortBy, setSortBy] = useState("");
+  const [favoriteIds, setFavoriteIds] = useState(new Set());
 
   useEffect(() => {
     async function loadData() {
@@ -55,6 +56,9 @@ function Restaurants() {
         );
 
         setRestaurants(enriched);
+
+        const favRes = await axiosInstance.get("/collection/favorites");
+        setFavoriteIds(new Set(favRes.data.map((f) => f.restaurantId)));
       } catch (err) {
         console.error(err);
       } finally {
@@ -63,6 +67,23 @@ function Restaurants() {
     }
     loadData();
   }, []);
+
+  const toggleFavorite = async (e, restaurantId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const isFav = favoriteIds.has(restaurantId);
+    try {
+      if (isFav) {
+        await axiosInstance.delete(`/collection/favorites/${restaurantId}`);
+        setFavoriteIds((prev) => { const next = new Set(prev); next.delete(restaurantId); return next; });
+      } else {
+        await axiosInstance.post(`/collection/favorites/${restaurantId}`);
+        setFavoriteIds((prev) => new Set(prev).add(restaurantId));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   let filtered = restaurants.filter((r) => {
     if (activeFilter === "new") return r.orderCount === 0;
@@ -118,7 +139,10 @@ function Restaurants() {
 
             <div className="restaurant-grid">
               {filtered.map((r) => (
-                <Link to={`/restaurants/${r.id}`} key={r.id} className="restaurant-card">
+                <Link to={`/restaurants/${r.id}`} key={r.id} className="restaurant-card" style={{ position: "relative" }}>
+                  <button className="heart-btn" onClick={(e) => toggleFavorite(e, r.id)}>
+                    {favoriteIds.has(r.id) ? "❤️" : "🤍"}
+                  </button>
                   {r.imageUrl ? (
                     <img src={r.imageUrl} alt={r.name} className="restaurant-card-image" />
                   ) : (

@@ -13,6 +13,8 @@ public interface RatingRepository extends JpaRepository<Rating, Long> {
 
     boolean existsByOrderIdAndTargetTypeAndTargetId(Long orderId, RatingTargetType targetType, Long targetId);
 
+    List<Rating> findByCustomerIdAndTargetTypeAndStarsGreaterThanEqual(Long customerId, RatingTargetType targetType, Integer stars);
+
     @Query("SELECT AVG(r.stars) FROM Rating r WHERE r.targetType = :targetType AND r.targetId = :targetId")
     Double findAverageStars(RatingTargetType targetType, Long targetId);
 }
