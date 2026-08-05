@@ -8,13 +8,15 @@ A full-stack food delivery platform simulation — inspired by Swiggy/Zomato —
 ![MySQL](https://img.shields.io/badge/MySQL-8-blue)
 ![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
-**Live demo:** _[coming soon]_
+**Live app:** https://foodflow-hazel.vercel.app
 
-![Demo](docs/screenshots/demo.gif)
+**API docs (Swagger):** https://foodflow-production-a866.up.railway.app/swagger-ui.html
 
 ---
 
 ## Screenshots
+
+![Demo](docs/screenshots/demo.gif)
 
 | Welcome | Browse Restaurants | Menu |
 |---|---|---|
@@ -32,7 +34,7 @@ A full-stack food delivery platform simulation — inspired by Swiggy/Zomato —
 - Browse restaurants with filters (New to You, Highly Reordered, Rated 4+, Under ₹300) and sorting
 - Cart, checkout with coupon codes, and a full simulated payment flow (UPI/Card/COD/Wallet)
 - Live order tracking with a visual status timeline
-- Ratings & reviews (restaurant, food item, delivery agent) with auto-updating averages
+- Ratings and reviews (restaurant, food item, delivery agent) with auto-updating averages
 - Real-time notifications for every order milestone
 - Favorites ("My Collection") and auto-populated "Liked Dishes"
 
@@ -57,23 +59,23 @@ A full-stack food delivery platform simulation — inspired by Swiggy/Zomato —
 
 ```mermaid
 flowchart LR
-    subgraph Frontend["React Frontend"]
+    subgraph Frontend["React Frontend (Vercel)"]
         UI["4 role-based dashboards"]
     end
-    subgraph Backend["Spring Boot Backend"]
+    subgraph Backend["Spring Boot Backend (Railway)"]
         API["REST API + JWT Auth"]
         Logic["Business Logic Layer<br/>(Order state machine, delivery<br/>assignment, surge pricing,<br/>coupon engine)"]
     end
-    DB[("MySQL Database")]
+    DB[("MySQL Database (Railway)")]
 
     UI -->|HTTPS / JSON| API
     API --> Logic
     Logic --> DB
 ```
 
-Order lifecycle is enforced through an explicit state machine (`PLACED -> ACCEPTED -> PREPARING -> READY_FOR_PICKUP -> PICKED_UP -> ON_THE_WAY -> DELIVERED`), with role-based transition rules — a restaurant owner can't skip straight to "Delivered," and a delivery agent can't touch pre-pickup statuses.
+Order lifecycle is enforced through an explicit state machine (`PLACED -> ACCEPTED -> PREPARING -> READY_FOR_PICKUP -> PICKED_UP -> ON_THE_WAY -> DELIVERED`), with role-based transition rules.
 
-Delivery assignment uses the Haversine formula to find the nearest available online agent, with automatic retry logic if no agent was available at the first attempt (self-healing on agent go-online).
+Delivery assignment uses the Haversine formula to find the nearest available online agent, with automatic retry logic if no agent was available at the first attempt.
 
 ---
 
@@ -83,11 +85,15 @@ Delivery assignment uses the Haversine formula to find the nearest available onl
 
 **Frontend:** React 18, Vite, React Router, Axios, Recharts
 
+**Deployment:** Vercel (frontend), Railway (backend + database)
+
 ---
 
 ## Try It Yourself
 
-Live demo credentials (no need to register — jump straight in):
+**Live app:** https://foodflow-hazel.vercel.app
+
+Use these demo credentials to jump straight in - or register your own account (customer, owner, and agent roles are self-serve):
 
 | Role | Email | Password |
 |---|---|---|
@@ -96,7 +102,7 @@ Live demo credentials (no need to register — jump straight in):
 | Delivery Agent | `demo.agent@foodflow.com` | `demo1234` |
 | Admin | `demo.admin@foodflow.com` | `demo1234` |
 
-The owner account comes pre-loaded with 6 branded restaurants and full menus — a good starting point to explore the owner dashboard. Or register your own account; customer, owner, and agent roles are self-serve.
+The owner account comes pre-loaded with 6 branded restaurants and full menus — a good starting point to explore the owner dashboard.
 
 ---
 
@@ -107,7 +113,7 @@ Prerequisites: Java 21, Node.js, MySQL 8
 ```bash
 # Backend
 cd foodflow
-# set DB_PASSWORD environment variable to your MySQL password first
+# Set DB_PASSWORD environment variable to your MySQL password first
 mvn spring-boot:run
 
 # Frontend (separate terminal)
@@ -115,6 +121,7 @@ cd foodflow-frontend
 npm install
 npm run dev
 ```
+
 Visit `http://localhost:5173`. API docs at `http://localhost:8080/swagger-ui.html`.
 
 ---
@@ -122,21 +129,24 @@ Visit `http://localhost:5173`. API docs at `http://localhost:8080/swagger-ui.htm
 ## Known Limitations
 
 This is a portfolio/demo project, not a production payment system:
-- Payments are simulated — no real payment gateway is integrated; card/UPI fields are collected for realism but never transmitted or stored.
+- Payments are simulated - no real payment gateway is integrated; card/UPI fields are collected for realism but never transmitted or stored.
 - Images are stock/placeholder photos, not real per-dish photography (no upload infrastructure yet).
-- Not hardened for production traffic — no rate limiting, no email verification, minimal input sanitization beyond basic validation.
+- Not hardened for production traffic - no rate limiting, no email verification, minimal input sanitization beyond basic validation.
 - Distance calculation uses straight-line (Haversine) distance, not real road routing.
+- The live demo is hosted on Railway's free tier - it may experience brief cold-start delays after periods of inactivity, and the deployment may go offline if the free tier credit runs out. If the live link is unavailable, the project can be run locally using the instructions above.
 
 ---
 
 ## Project Stats
 
-Built solo, end-to-end, across 7 backend phases, 8 frontend phases, and an ongoing polishing round — 45+ commits with a full PR-based git history documenting the entire build.
+Built end-to-end by a single developer across 7 backend and 8 frontend phases, culminating in deployment. Backed by 50+ GitHub commits and a complete pull request history
 
 ---
 
 ## About
 
-Owned and maintained by Toyesh Kumar. Built as a learning project to go deep on real backend systems design and a complete React frontend, from zero prior experience with either Spring Boot or React.
+Owned and maintained by Toyesh Kumar. Built as a learning project to go deep on real backend systems design (not just CRUD) and a complete React frontend, from zero prior experience with either Spring Boot or React.
 
-Feedback, issues, and pull requests are welcome — feel free to open an issue if you spot a bug or have a suggestion.
+Feedback, issues, and pull requests are welcome. Feel free to open an issue if you spot a bug or have a suggestion. 
+
+GitHub: https://github.com/toyeshkumar06/foodflow
