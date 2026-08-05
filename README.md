@@ -145,7 +145,7 @@ Built end-to-end by a single developer across 7 backend and 8 frontend phases, c
 
 ## About
 
-Owned and maintained by Toyesh Kumar. Built as a learning project to go deep on real backend systems design (not just CRUD) and a complete React frontend, from zero prior experience with either Spring Boot or React.
+Owned and maintained by Toyesh Kumar. Built as a learning project to go deep on real backend systems design and a complete React frontend, from zero prior experience with either Spring Boot or React.
 
 Feedback, issues, and pull requests are welcome. Feel free to open an issue if you spot a bug or have a suggestion. 
 
